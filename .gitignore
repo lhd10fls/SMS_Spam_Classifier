@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+.env
+
+# Generated data, reports, and trained artifacts
+Data/
+Model/
+reports/
+
+*.pkl
+*.joblib
+
