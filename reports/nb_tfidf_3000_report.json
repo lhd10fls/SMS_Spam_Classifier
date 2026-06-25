@@ -1,0 +1,79 @@
+{
+  "model": "nb",
+  "max_features": 3000,
+  "model_path": "/Users/laquoctrung/Downloads/2025.2/Machine Learning and Data Mining/SMS_Spam_Classifier/Model/Pipeline/nb_tfidf_3000_pipeline.joblib",
+  "latest_model_path": "/Users/laquoctrung/Downloads/2025.2/Machine Learning and Data Mining/SMS_Spam_Classifier/Model/Pipeline/spam_pipeline.joblib",
+  "dataset_summary": {
+    "rows": 54295,
+    "ham": 33809,
+    "spam": 20486,
+    "missing_text": 0,
+    "duplicate_text": 0,
+    "avg_text_length": 763.651422782945,
+    "max_text_length": 5000
+  },
+  "metrics": [
+    {
+      "split": "train",
+      "accuracy": 0.9165649821572465,
+      "balanced_accuracy": 0.9136953009568253,
+      "precision_spam": 0.8798809523809524,
+      "recall_spam": 0.9020014644862094,
+      "f1_spam": 0.890803905025913
+    },
+    {
+      "split": "validation",
+      "accuracy": 0.9237569060773481,
+      "balanced_accuracy": 0.9232014404845266,
+      "precision_spam": 0.8821879382889201,
+      "recall_spam": 0.9209370424597365,
+      "f1_spam": 0.9011461318051576
+    },
+    {
+      "split": "test",
+      "accuracy": 0.9093922651933701,
+      "balanced_accuracy": 0.9059943539450283,
+      "precision_spam": 0.8708909004287756,
+      "recall_spam": 0.8921425085407516,
+      "f1_spam": 0.8813886210221794
+    }
+  ],
+  "test_confusion_matrix": [
+    [
+      3110,
+      271
+    ],
+    [
+      221,
+      1828
+    ]
+  ],
+  "test_classification_report": {
+    "ham": {
+      "precision": 0.9336535574902431,
+      "recall": 0.9198461993493049,
+      "f1-score": 0.9266984505363528,
+      "support": 3381.0
+    },
+    "spam": {
+      "precision": 0.8708909004287756,
+      "recall": 0.8921425085407516,
+      "f1-score": 0.8813886210221794,
+      "support": 2049.0
+    },
+    "accuracy": 0.9093922651933701,
+    "macro avg": {
+      "precision": 0.9022722289595093,
+      "recall": 0.9059943539450283,
+      "f1-score": 0.9040435357792661,
+      "support": 5430.0
+    },
+    "weighted avg": {
+      "precision": 0.9099701902123524,
+      "recall": 0.9093922651933701,
+      "f1-score": 0.9096008739848718,
+      "support": 5430.0
+    }
+  },
+  "training_seconds": 12.74
+}

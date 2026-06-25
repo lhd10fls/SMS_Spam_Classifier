@@ -1,0 +1,79 @@
+{
+  "model": "svm",
+  "max_features": 3000,
+  "model_path": "/Users/laquoctrung/Downloads/2025.2/Machine Learning and Data Mining/SMS_Spam_Classifier/Model/Pipeline/svm_tfidf_3000_pipeline.joblib",
+  "latest_model_path": "/Users/laquoctrung/Downloads/2025.2/Machine Learning and Data Mining/SMS_Spam_Classifier/Model/Pipeline/spam_pipeline.joblib",
+  "dataset_summary": {
+    "rows": 54295,
+    "ham": 33809,
+    "spam": 20486,
+    "missing_text": 0,
+    "duplicate_text": 0,
+    "avg_text_length": 763.651422782945,
+    "max_text_length": 5000
+  },
+  "metrics": [
+    {
+      "split": "train",
+      "accuracy": 0.9611373316449867,
+      "balanced_accuracy": 0.960606858937884,
+      "precision_spam": 0.9397511068565274,
+      "recall_spam": 0.9584452038076642,
+      "f1_spam": 0.9490061023503111
+    },
+    {
+      "split": "validation",
+      "accuracy": 0.9524861878453039,
+      "balanced_accuracy": 0.9520397120589913,
+      "precision_spam": 0.9258202567760342,
+      "recall_spam": 0.9502196193265008,
+      "f1_spam": 0.9378612716763006
+    },
+    {
+      "split": "test",
+      "accuracy": 0.9449355432780847,
+      "balanced_accuracy": 0.9436691475877383,
+      "precision_spam": 0.9174618320610687,
+      "recall_spam": 0.9385065885797951,
+      "f1_spam": 0.9278648974668275
+    }
+  ],
+  "test_confusion_matrix": [
+    [
+      3208,
+      173
+    ],
+    [
+      126,
+      1923
+    ]
+  ],
+  "test_classification_report": {
+    "ham": {
+      "precision": 0.9622075584883023,
+      "recall": 0.9488317065956817,
+      "f1-score": 0.9554728220402084,
+      "support": 3381.0
+    },
+    "spam": {
+      "precision": 0.9174618320610687,
+      "recall": 0.9385065885797951,
+      "f1-score": 0.9278648974668275,
+      "support": 2049.0
+    },
+    "accuracy": 0.9449355432780847,
+    "macro avg": {
+      "precision": 0.9398346952746854,
+      "recall": 0.9436691475877383,
+      "f1-score": 0.941668859753518,
+      "support": 5430.0
+    },
+    "weighted avg": {
+      "precision": 0.9453228451458711,
+      "recall": 0.9449355432780847,
+      "f1-score": 0.9450550250879327,
+      "support": 5430.0
+    }
+  },
+  "training_seconds": 13.03
+}

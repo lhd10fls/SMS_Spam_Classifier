@@ -6,7 +6,6 @@ __pycache__/
 # Generated data, reports, and trained artifacts
 Data/
 Model/
-reports/
 
 *.pkl
 *.joblib

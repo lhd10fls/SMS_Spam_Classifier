@@ -1,0 +1,79 @@
+{
+  "model": "knn",
+  "max_features": 3000,
+  "model_path": "/Users/laquoctrung/Downloads/2025.2/Machine Learning and Data Mining/SMS_Spam_Classifier/Model/Pipeline/knn_tfidf_3000_pipeline.joblib",
+  "latest_model_path": "/Users/laquoctrung/Downloads/2025.2/Machine Learning and Data Mining/SMS_Spam_Classifier/Model/Pipeline/spam_pipeline.joblib",
+  "dataset_summary": {
+    "rows": 54295,
+    "ham": 33809,
+    "spam": 20486,
+    "missing_text": 0,
+    "duplicate_text": 0,
+    "avg_text_length": 763.651422782945,
+    "max_text_length": 5000
+  },
+  "metrics": [
+    {
+      "split": "train",
+      "accuracy": 0.992126165534707,
+      "balanced_accuracy": 0.9897218450378449,
+      "precision_spam": 0.9991911398705824,
+      "recall_spam": 0.9799243348791798,
+      "f1_spam": 0.989463955637708
+    },
+    {
+      "split": "validation",
+      "accuracy": 0.930755064456722,
+      "balanced_accuracy": 0.9180538215668215,
+      "precision_spam": 0.9456579648375066,
+      "recall_spam": 0.8662762323084432,
+      "f1_spam": 0.9042282221090168
+    },
+    {
+      "split": "test",
+      "accuracy": 0.9220994475138121,
+      "balanced_accuracy": 0.9077384470880465,
+      "precision_spam": 0.9385113268608414,
+      "recall_spam": 0.849194729136164,
+      "f1_spam": 0.8916218293620292
+    }
+  ],
+  "test_confusion_matrix": [
+    [
+      3267,
+      114
+    ],
+    [
+      309,
+      1740
+    ]
+  ],
+  "test_classification_report": {
+    "ham": {
+      "precision": 0.9135906040268457,
+      "recall": 0.966282165039929,
+      "f1-score": 0.9391979301423027,
+      "support": 3381.0
+    },
+    "spam": {
+      "precision": 0.9385113268608414,
+      "recall": 0.849194729136164,
+      "f1-score": 0.8916218293620292,
+      "support": 2049.0
+    },
+    "accuracy": 0.9220994475138121,
+    "macro avg": {
+      "precision": 0.9260509654438436,
+      "recall": 0.9077384470880465,
+      "f1-score": 0.9154098797521659,
+      "support": 5430.0
+    },
+    "weighted avg": {
+      "precision": 0.922994390599011,
+      "recall": 0.9220994475138121,
+      "f1-score": 0.9212451805108515,
+      "support": 5430.0
+    }
+  },
+  "training_seconds": 46.64
+}
