@@ -10,4 +10,4 @@ reports/
 
 *.pkl
 *.joblib
-
+.DS_Store
