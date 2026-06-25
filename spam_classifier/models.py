@@ -20,8 +20,8 @@ def get_model(model_name):
         return LinearSVC(C=1.0, class_weight="balanced", random_state=42)
     if name in {"knn", "k_nearest_neighbors"}:
         return KNeighborsClassifier(
-            n_neighbors=5,
-            weights="distance",
+            n_neighbors=15,
+            weights="uniform",
             metric="cosine",
             algorithm="brute",
             n_jobs=-1,

@@ -1,24 +1,32 @@
 import joblib
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer, CountVectorizer
 from sklearn.pipeline import Pipeline
 
 from .models import get_model
 from .preprocessing import normalize_text
 
 
-def build_pipeline(model_name="lr", max_features=3000, ngram_range=(1, 2)):
+def build_pipeline(model_name="lr", embed_type="tfidf", max_features=3000, ngram_range=(1, 2)):
+    if embed_type == "tfidf":
+        vectorizer = TfidfVectorizer(
+            preprocessor=normalize_text,
+            stop_words="english",
+            max_features=max_features,
+            ngram_range=ngram_range,
+            min_df=2,
+        )
+    else:
+        vectorizer = CountVectorizer(
+            preprocessor=normalize_text,
+            stop_words="english",
+            max_features=max_features,
+            ngram_range=ngram_range,
+            min_df=2,
+        )
+        
     return Pipeline(
         steps=[
-            (
-                "tfidf",
-                TfidfVectorizer(
-                    preprocessor=normalize_text,
-                    stop_words="english",
-                    max_features=max_features,
-                    ngram_range=ngram_range,
-                    min_df=2,
-                ),
-            ),
+            ("embed", vectorizer),
             ("model", get_model(model_name)),
         ]
     )
