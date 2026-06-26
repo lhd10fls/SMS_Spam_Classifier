@@ -8,12 +8,17 @@ from spam_classifier.paths import PIPELINE_MODEL_DIR, REPORT_DIR
 from spam_classifier.pipeline import load_pipeline
 
 
+# Paths for LSTM
+LSTM_MODEL_PATH = Path(__file__).resolve().parent.parent / "Model" / "Lstm" / "LSTM_model_best.pth"
+LSTM_VOCAB_PATH = Path(__file__).resolve().parent.parent / "Model" / "Lstm" / "vocab_dict.json"
+
 MODEL_OPTIONS = {
     "Logistic Regression": "lr",
     "Naive Bayes": "nb",
     "SVM": "svm",
     "k-NN": "knn",
     "Random Forest": "rf",
+    "LSTM (Deep Learning)": "lstm",
 }
 
 EXAMPLES = {
@@ -22,8 +27,48 @@ EXAMPLES = {
     "Spam khẩn cấp": "URGENT! Your account has been selected for a cash reward. Reply YES now",
 }
 
+def basic_english_tokenizer(line):
+    line = line.lower()
+    for pat, repl in [("'", " ' "), ("\"", ""), (".", " . "), ("<br />", " "), (",", " , "), ("(", " ( "), (")", " ) "), ("!", " ! "), ("?", " ? "), (";", " ; "), (":", " : ")]:
+        line = line.replace(pat, repl)
+    return line.split()
+
+@st.cache_resource
+def load_lstm():
+    if not LSTM_MODEL_PATH.exists() or not LSTM_VOCAB_PATH.exists():
+        return None, None
+    import torch
+    from dl_classifier.model import LSTM_model
+    
+    with open(LSTM_VOCAB_PATH, "r", encoding="utf-8") as f:
+        vocab = json.load(f)
+        
+    model = LSTM_model(vocab_size=len(vocab), embedding_dim=200, hidden_dim=200, num_layers=1)
+    model.load_state_dict(torch.load(LSTM_MODEL_PATH, map_location='cpu', weights_only=True))
+    model.eval()
+    return model, vocab
+
+def predict_with_lstm(model, vocab, message):
+    import torch
+    tokens = basic_english_tokenizer(message)
+    # Lấy token từ vocab, nếu không có thì lấy <unk> (index 0)
+    ids = [vocab.get(t, 0) for t in tokens]
+    if len(ids) == 0:
+        ids = [1] * 10 # pad_idx là 1
+    ids = ids[:200]
+    
+    x = torch.LongTensor(ids).unsqueeze(0)
+    with torch.inference_mode():
+        logits = model(x).item()
+        prob = torch.sigmoid(torch.tensor(logits)).item()
+        
+    label = "Spam" if prob > 0.5 else "Ham"
+    return label, prob, "Xác suất spam"
 
 def model_path_for(model_key):
+    if model_key == "lstm":
+        return LSTM_MODEL_PATH if LSTM_MODEL_PATH.exists() else None
+
     candidates = sorted(
         PIPELINE_MODEL_DIR.glob(f"{model_key}_tfidf_*_pipeline.joblib"),
         key=lambda path: path.stat().st_mtime,
@@ -31,13 +76,11 @@ def model_path_for(model_key):
     )
     return candidates[0] if candidates else None
 
-
 def report_path_for(model_path):
-    if not model_path:
+    if not model_path or model_path.name == "LSTM_model_best.pth":
         return None
     report_name = model_path.name.replace("_pipeline.joblib", "_report.json")
     return REPORT_DIR / report_name
-
 
 def load_report(model_path):
     path = report_path_for(model_path)
@@ -45,11 +88,9 @@ def load_report(model_path):
         return json.loads(path.read_text(encoding="utf-8"))
     return None
 
-
 @st.cache_resource
 def cached_pipeline(path):
     return load_pipeline(Path(path))
-
 
 def predict_with_pipeline(pipeline, message):
     prediction = int(pipeline.predict([message])[0])
@@ -68,13 +109,11 @@ def predict_with_pipeline(pipeline, message):
 
     return label, score, score_name
 
-
 def metric_row(report):
     if not report:
         return None
     test_metric = next((item for item in report.get("metrics", []) if item.get("split") == "test"), None)
     return test_metric
-
 
 def render_metrics(report):
     test_metric = metric_row(report)
@@ -86,7 +125,6 @@ def render_metrics(report):
     c1.metric("Accuracy", f"{test_metric['accuracy']:.2%}")
     c2.metric("Balanced Acc", f"{test_metric['balanced_accuracy']:.2%}")
     c3.metric("F1 Spam", f"{test_metric['f1_spam']:.2%}")
-
 
 def available_models():
     rows = []
@@ -101,7 +139,6 @@ def available_models():
             }
         )
     return rows
-
 
 st.set_page_config(page_title="SMS Spam Classifier", layout="centered")
 st.title("SMS Spam Classifier")
@@ -141,8 +178,13 @@ if left.button("Phân loại", type="primary", disabled=not message.strip()):
     if show_all:
         st.subheader("Kết quả theo từng model")
         for item in available:
-            pipeline = cached_pipeline(str(item["path"]))
-            label, score, score_name = predict_with_pipeline(pipeline, message)
+            if item["key"] == "lstm":
+                lstm_model, lstm_vocab = load_lstm()
+                label, score, score_name = predict_with_lstm(lstm_model, lstm_vocab, message)
+            else:
+                pipeline = cached_pipeline(str(item["path"]))
+                label, score, score_name = predict_with_pipeline(pipeline, message)
+                
             with st.container(border=True):
                 cols = st.columns([1.2, 1, 1])
                 cols[0].metric(item["display_name"], label)
@@ -151,18 +193,19 @@ if left.button("Phân loại", type="primary", disabled=not message.strip()):
                     cols[1].metric(score_name, value)
                 cols[2].caption(f"Artifact: {item['path'].name}")
     else:
-        pipeline = cached_pipeline(str(selected_path))
-        label, score, score_name = predict_with_pipeline(pipeline, message)
+        if selected["key"] == "lstm":
+            lstm_model, lstm_vocab = load_lstm()
+            label, score, score_name = predict_with_lstm(lstm_model, lstm_vocab, message)
+        else:
+            pipeline = cached_pipeline(str(selected_path))
+            label, score, score_name = predict_with_pipeline(pipeline, message)
+            
         st.metric("Kết quả", label)
         st.caption(f"Danh mục: {category}")
         st.caption(f"Model sử dụng: {selected_path.name}")
         if score is not None:
             value = f"{score:.2%}" if score_name == "Xác suất spam" else f"{score:.4f}"
             st.caption(f"{score_name}: {value}")
-
-st.divider()
-st.subheader("Metric của model đang chọn")
-render_metrics(report)
 
 with st.expander("Model khả dụng"):
     for item in models:
